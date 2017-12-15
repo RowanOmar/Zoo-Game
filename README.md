@@ -3,3 +3,8 @@ Children Zoo Encyclopedia is an entertainment game for children aged between 3~5
 # Contributor
 Name: Hend Mohamed
 Email: hend1410317@miuegypt.edu.eg 
+
+![capture1](https://user-images.githubusercontent.com/34573316/34062414-245750f0-e1f5-11e7-81e7-1b1b5ba85532.PNG)
+![capture2](https://user-images.githubusercontent.com/34573316/34062415-24804e92-e1f5-11e7-9e17-8a9c13b05ccc.PNG)
+![capture3](https://user-images.githubusercontent.com/34573316/34062416-24b13dea-e1f5-11e7-958a-1e22125219e2.PNG)
+![capture4](https://user-images.githubusercontent.com/34573316/34062417-24e8b5b8-e1f5-11e7-8f06-b1395053d024.PNG)
