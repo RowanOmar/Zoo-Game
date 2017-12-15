@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.rawgit.com/konvajs/konva/1.7.6/konva.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>Level 1 Place the animals</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #F0F0F0;
+    }
+  </style>
+</head>
+<body>
+
+ <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="myimg" src="Images/mark.png" alt="Question Mark" height="150" width="100" float=right>
+
+      <div class="group">
+                
+            <p >You win!</p>      
+            <a class="btnmodal" href="homepage.html" margin-left="50px">Finish</a>
+            
+      </div>
+  </div>
+        </div>
+
+  <div id="container"></div>
+  <script>
+
+  var modal = document.getElementById('myModal');
+  
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    function loadImages(sources, callback) {
+        var assetDir = 'assets/';
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        for(var src in sources) {
+            numImages++;
+        }
+        for(var src in sources) {
+            images[src] = new Image();
+            images[src].onload = function() {
+                if(++loadedImages >= numImages) {
+                    callback(images);
+                }
+            };
+            images[src].src = assetDir + sources[src];
+        }
+    }
+    function isNearOutline(animal, outline) {
+        var a = animal;
+        var o = outline;
+        var ax = a.getX();
+        var ay = a.getY();
+
+        if(ax > o.x - 20 && ax < o.x + 20 && ay > o.y - 20 && ay < o.y + 20) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    function drawBackground(background, beachImg, text) {
+        var context = background.getContext();
+        context.drawImage(beachImg, 0, 0);
+        context.setAttr('font', '20pt Calibri');
+        context.setAttr('textAlign', 'center');
+        context.setAttr('fillStyle', 'white');
+        context.fillText(text, background.getStage().getWidth() / 2, 40);
+    }
+
+    function initStage(images) {
+        var stage = new Konva.Stage({
+            container: 'container',
+            width: 1400,
+            height: 650
+        });
+        var background = new Konva.Layer();
+        var animalLayer = new Konva.Layer();
+        var animalShapes = [];
+        var score = 0;
+
+        // image positions
+        var animals = {
+            
+            lion: {
+                x: 10,
+                y: 420
+            },
+            lion_food: {
+                x: 450,
+                y: 100
+            },
+            squirrel: {
+                x: 1100,
+                y: 0
+            },
+            squirrel_food: {
+                x: 450,
+                y: 300
+            },
+            deer: {
+                x: 1100,
+                y: 420
+
+            },
+            deer_food: {
+                x: 680,
+                y: 130
+            },
+            tiger: {
+                x: 0,
+                y: 230
+            },
+            tiger_food: {
+                x: 640,
+                y: 240
+            },
+            cow: {
+                x: 25,
+                y: 10
+            },
+            cow_food: {
+                x: 470,
+                y: 480
+            },
+            rabbit: {
+                x: 1100,
+                y: 230
+            },
+            rabbit_food: {
+                x:700,
+                y:480
+            }
+
+        };
+
+        var outlines = {
+            
+            lion_food_black: {
+                x: 180,
+                y: 480
+            },
+            squirrel_food_black: {
+                x: 900,
+                y: 70
+            },
+            deer_food_black: {
+                x: 960,
+                y: 530
+            },
+            cow_food_black: {
+                x: 250,
+                y: 70
+            },
+            tiger_food_black: {
+                x: 190,
+                y: 230
+            },
+            rabbit_food_black: {
+                x:920,
+                y:280
+            }
+        };
+
+        // create draggable animals
+        for(var key in animals) {
+            // anonymous function to induce scope
+            (function() {
+                var privKey = key;
+                var anim = animals[key];
+
+                var animal = new Konva.Image({
+                    image: images[key],
+                    x: anim.x,
+                    y: anim.y,
+                    draggable: true
+                });
+
+
+
+                animal.on('dragstart', function() {
+                    this.moveToTop();
+                    animalLayer.draw();
+                });
+                /*
+                       * check if animal is in the right spot and
+                       * snap into place if it is
+                       */
+                animal.on('dragend', function() {
+                    var outline = outlines[privKey + '_black'];
+                    if(!animal.inRightPlace && isNearOutline(animal, outline)) {
+                        animal.position({
+                            x : outline.x,
+                            y : outline.y
+                        });
+                        animalLayer.draw();
+                        animal.inRightPlace = true;
+
+                        if(++score >= 6) {
+                            // var text = 'You win! Enjoy your booty!';
+                            modal.style.display = "block";
+                            drawBackground(background, images.beach, text);
+                        }
+
+                        // disable drag and drop
+                        setTimeout(function() {
+                            animal.draggable(false);
+                        }, 50);
+                    }
+                });
+                // make animal glow on mouseover
+                animal.on('mouseover', function() {
+                    // animal.image(images[privKey + '_glow']);
+                    animalLayer.draw();
+                    document.body.style.cursor = 'pointer';
+                });
+                // return animal on mouseout
+                animal.on('mouseout', function() {
+                    animal.image(images[privKey]);
+                    animalLayer.draw();
+                    document.body.style.cursor = 'default';
+                });
+
+                animal.on('dragmove', function() {
+                    document.body.style.cursor = 'pointer';
+                });
+
+                animalLayer.add(animal);
+                animalShapes.push(animal);
+            })();
+        }
+
+        // create animal outlines
+        for(var key in outlines) {
+            // anonymous function to induce scope
+            (function() {
+                var imageObj = images[key];
+                var out = outlines[key];
+
+                var outline = new Konva.Image({
+                    image: imageObj,
+                    x: out.x,
+                    y: out.y
+                });
+
+                animalLayer.add(outline);
+            })();
+        }
+
+        stage.add(background);
+        stage.add(animalLayer);
+
+        drawBackground(background, images.beach, 'Ahoy! Feed the animals!');
+    }
+
+    var sources = {
+        beach: 'green_yellow_pattern.jpg',
+        squirrel: 'rsz_1png1.png',
+        squirrel_food: 'squirrel_food.png',
+        squirrel_food_black: 'squirrel_food_shade.png',
+        lion: 'rsz_lion.png',
+        lion_food: 'lion_meet.png',
+        lion_food_black: 'lion_meetshade.png',
+        deer: 'rsz_png2.png',
+        deer_food: 'small_grass.png',
+        deer_food_black: 'small_grassshade.png',
+        tiger: 'rsz_png4.png',
+        tiger_food: 'meet1.png',
+        tiger_food_black: 'meet1_shade.png',
+        cow: 'rsz_png10.png',
+        cow_food: 'tall_grass.png',
+        cow_food_black: 'tall_grassshade.png',
+        rabbit: 'rsz_png6.png',
+        rabbit_food:'carrot.png',
+        rabbit_food_black:'carrotshadow.png'
+    };
+    loadImages(sources, initStage);
+  </script>
+
+</body>
+</html>

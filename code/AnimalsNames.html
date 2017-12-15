@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.rawgit.com/konvajs/konva/1.7.6/konva.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
+  <title>Animals' Names</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #F0F0F0;
+    }
+  </style>
+</head>
+<body>
+ <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="myimg" src="Images/mark.png" alt="Question Mark" height="150" width="100" float=right>
+
+      <div class="group">
+                
+            <p >You win!</p>      
+            <a class="btnmodal" href="homepage.html" margin-left="50px">Finish</a>
+            
+      </div>
+  </div>
+        </div>
+
+  <div id="container"></div>
+  <script>
+
+  var modal = document.getElementById('myModal');
+  
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    function loadImages(sources, callback) {
+        var assetDir = 'assets/';
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        for(var src in sources) {
+            numImages++;
+        }
+        for(var src in sources) {
+            images[src] = new Image();
+            images[src].onload = function() {
+                if(++loadedImages >= numImages) {
+                    callback(images);
+                }
+            };
+            images[src].src = assetDir + sources[src];
+        }
+    }
+
+    function isNearOutline(animal, outline) {
+        var a = animal;
+        var o = outline;
+        var ax = a.getX();
+        var ay = a.getY();
+
+        if(ax > o.x - 20 && ax < o.x + 20 && ay > o.y - 20 && ay < o.y + 20) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    function drawBackground(background, beachImg, text) {
+        var context = background.getContext();
+        context.drawImage(beachImg, 0, 0);
+        context.setAttr('font', '20pt Calibri');
+        context.setAttr('textAlign', 'center');
+        context.setAttr('fillStyle', 'white');
+        context.fillText(text, background.getStage().getWidth() / 2, 40);
+    }
+
+    function initStage(images) {
+        var stage = new Konva.Stage({
+            container: 'container',
+            width: 1400,
+            height: 650
+        });
+        var background = new Konva.Layer();
+        var animalLayer = new Konva.Layer();
+        var animalShapes = [];
+        var score = 0;
+
+        // image positions
+        var animals = {
+            
+            lion: {
+                x: 70,
+                y: 330
+            },
+  
+            squirrel: {
+                x: 1100,
+                y: 0
+            },
+
+            cow: {
+                x: 70,
+                y: 30
+            },
+  
+            zebra: {
+                x: 1050,
+                y: 360
+            },
+            c:{
+                x:450,
+                y:70
+            },
+            l:{
+                x:550,
+                y:63
+            },
+            s:{
+                x:650,
+                y:70
+            },
+            l1:{
+                x:750,
+                y:63
+            },
+            z:{
+                x:450,
+                y:160
+            },
+            e:{
+                x:550,
+                y:160
+            },
+            q:{
+                x:650,
+                y:160
+            },
+            i:{
+                x:750,
+                y:160
+            },
+            o:{
+                x:450,
+                y:260
+            },
+            w:{
+                x:550,
+                y:260
+            },
+            i1:{
+                x:650,
+                y:260
+            },
+            o1:{
+                x:750,
+                y:260
+            },
+            b:{
+                x:450,
+                y:360
+            },
+            r:{
+                x:550,
+              y:360
+                
+            },
+            r1:{
+                x:650,
+                y:360
+            },
+            n:{
+                x:750,
+                y:360
+            },
+            a:{
+                x:500,
+                y:460
+            },
+            r2:{
+                x:600,
+                y:460
+            },
+            e1:{
+                x:700,
+                y:460
+            }
+        };
+
+        var outlines = {
+            
+
+            l_black: {
+                x: 25,
+                y: 540
+            },
+            i_black: {
+                x: 75,
+                y: 540
+            },
+            o_black: {
+                x: 125,
+                y: 540
+            },
+            n_black: {
+                x: 195,
+                y: 545
+                
+            },
+            c_black: {
+                x:25,
+                y:200
+            },
+            o1_black: {
+                x:95,
+                y:190
+            },
+            w_black: {
+                x:175,
+                y:200
+            },
+            s_black: {
+                x:920,
+                y:220
+            },
+            q_black:{
+             x:980,
+             y:220
+                
+            },
+            i1_black:{
+                x:1030,
+                y:210
+            },
+            r_black:{
+                x: 1080,
+                y: 220
+            },
+            r1_black:{
+                x: 1140,
+                y: 220
+            },
+            e_black:{
+                x: 1200,
+                y: 220
+            },
+            l1_black:{
+                x: 1255,
+                y: 215
+            },
+            z_black:{
+                x: 980,
+                y: 550
+            },
+            e1_black:{
+                x:1050,
+                y:550
+            },
+            b_black:{
+                x:1115,
+                y:555
+            },
+            r2_black:{
+                x:1180,
+                y:550
+            },
+            a_black:{
+                x: 1245,
+                y: 560
+            } 
+
+        };
+
+        // create draggable animals
+        for(var key in animals) {
+            // anonymous function to induce scope
+            (function() {
+                var privKey = key;
+                var anim = animals[key];
+
+                var animal = new Konva.Image({
+                    image: images[key],
+                    x: anim.x,
+                    y: anim.y,
+                    draggable: true
+                });
+
+
+
+                animal.on('dragstart', function() {
+                    this.moveToTop();
+                    animalLayer.draw();
+                });
+                /*
+                       * check if animal is in the right spot and
+                       * snap into place if it is
+                       */
+                animal.on('dragend', function() {
+                    var outline = outlines[privKey + '_black'];
+                    if(!animal.inRightPlace && isNearOutline(animal, outline)) {
+                        animal.position({
+                            x : outline.x,
+                            y : outline.y
+                        });
+                        animalLayer.draw();
+                        animal.inRightPlace = true;
+
+                        if(++score >= 19) {
+                            // var text = 'You win! Enjoy your booty!';
+                            modal.style.display = "block";
+                            drawBackground(background, images.beach, text);
+                        }
+
+                        // disable drag and drop
+                        setTimeout(function() {
+                            animal.draggable(false);
+                        }, 50);
+                    }
+                });
+                // make animal glow on mouseover
+                animal.on('mouseover', function() {
+                    // animal.image(images[privKey + '_glow']);
+                    animalLayer.draw();
+                    document.body.style.cursor = 'pointer';
+                });
+                // return animal on mouseout
+                animal.on('mouseout', function() {
+                    animal.image(images[privKey]);
+                    animalLayer.draw();
+                    document.body.style.cursor = 'default';
+                });
+
+                animal.on('dragmove', function() {
+                    document.body.style.cursor = 'pointer';
+                });
+
+                animalLayer.add(animal);
+                animalShapes.push(animal);
+            })();
+        }
+
+        // create animal outlines
+        for(var key in outlines) {
+            // anonymous function to induce scope
+            (function() {
+                var imageObj = images[key];
+                var out = outlines[key];
+
+                var outline = new Konva.Image({
+                    image: imageObj,
+                    x: out.x,
+                    y: out.y
+                });
+
+                animalLayer.add(outline);
+            })();
+        }
+
+        stage.add(background);
+        stage.add(animalLayer);
+
+        drawBackground(background, images.beach, 'Ahoy! Match letters to form animals names!');
+    }
+
+    var sources = {
+        beach: 'green_yellow_pattern.jpg', 
+        l_black: 'l_shadow.png',
+        i_black: 'i_shadow.png',
+        o_black: 'o_shadow.png',
+        n_black: 'n_shadow.png',
+        c_black:'c_shadow.png',
+        o1_black: 'o_shadow.png',
+        w_black:'w_shadow.png',
+        s_black:'s_shadow.png',
+        q_black:'q_shadow.png' ,
+        i1_black:'i_shadow.png' ,
+        r_black:'r_shadow.png' ,
+        r1_black:'r_shadow.png' ,
+        e_black:'e_shadow.png' ,
+        l1_black:'l_shadow.png',
+        z_black:'z_shadow.png',
+        e1_black:'e_shadow.png',
+        b_black: 'b_shadow.png',
+        r2_black:'r_shadow.png',
+        a_black:'a_shadow.png',   
+        c:'c.png',
+        l:'l.png',
+        s:'s.png',
+        z:'z.png',
+        e:'e.png',
+        q:'q.png',
+        i:'i.png',
+        o:'o.png',
+        w:'w.png',
+        o1:'o_copy.png',
+        i1:'i.png',
+        b:'b.png',
+        r:'r.png',
+        r1:'r.png',
+        n:'n.png',
+        a:'a.png',
+        r2:'r.png',
+        e1:'e.png',
+        squirrel: 'rsz_1png1.png',
+        l1:'l.png',      
+        lion: 'rsz_lion.png',
+        cow: 'rsz_png10.png',
+        zebra: 'rsz_png5.png'
+    };
+
+    loadImages(sources, initStage);
+  </script>
+
+</body>
+</html>
